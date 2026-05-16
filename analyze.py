@@ -1,19 +1,19 @@
 import yfinance as yf
-import anthropic
+import google.generativeai as genai
 import os
 from datetime import date
 
-client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+genai.configure(api_key=os.environ["GEMINI_API_KEY"])
+model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
     hist = stock.history(period="5d")
     info = stock.fast_info
-    
-    # Get recent news headlines
+
     news = stock.news[:3] if stock.news else []
     headlines = [n.get("content", {}).get("title", "") for n in news]
-    
+
     return {
         "ticker": ticker,
         "price": round(info.last_price, 2),
@@ -42,12 +42,8 @@ def analyze(data):
     **Key Risk or Opportunity:** (one thing to watch tomorrow)
     **Verdict:** Watch | Hold | Act | Avoid
     """
-    message = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1000,
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return message.content[0].text
+    response = model.generate_content(prompt)
+    return response.text
 
 def main():
     with open("tickers.txt") as f:
@@ -71,7 +67,7 @@ def main():
 
     os.makedirs("reports", exist_ok=True)
     report_path = f"reports/{today}.md"
-    
+
     with open(report_path, "w") as f:
         f.write("\n".join(lines))
 
