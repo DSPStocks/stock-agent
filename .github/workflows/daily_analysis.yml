@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - uses: actions/setup-python@v5
         with:
@@ -31,11 +32,14 @@ jobs:
         run: python analyze.py
 
       - name: Commit report
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          git config user.name "stock-agent"
-          git config user.email "agent@github"
-          git fetch origin main
-          git reset --hard origin/main
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin
+          git checkout main
+          git pull origin main --no-rebase
           git add reports/
-          git commit -m "📊 Daily report $(date +%Y-%m-%d)" || echo "Nothing to commit"
-          git push origin main --force
+          git diff --cached --quiet || git commit -m "📊 Daily report $(date +%Y-%m-%d)"
+          git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
