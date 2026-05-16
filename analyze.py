@@ -4,7 +4,7 @@ import os
 from datetime import date
 
 genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-1.5-flash")
+model = model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
