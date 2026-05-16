@@ -31,6 +31,7 @@ jobs:
         run: |
           git config user.name "stock-agent"
           git config user.email "agent@github"
+          git pull --rebase origin main
           git add reports/
           git commit -m "📊 Daily report $(date +%Y-%m-%d)" || echo "Nothing to commit"
           git push
