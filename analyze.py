@@ -1,10 +1,9 @@
 import yfinance as yf
-import google.generativeai as genai
+from groq import Groq
 import os
 from datetime import date
 
-genai.configure(api_key=os.environ["GEMINI_API_KEY"])
-model = genai.GenerativeModel("gemini-2.0-flash")
+client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
 def get_stock_data(ticker):
     stock = yf.Ticker(ticker)
@@ -42,10 +41,15 @@ def analyze(data):
     **Key Risk or Opportunity:** (one thing to watch tomorrow)
     **Verdict:** Watch | Hold | Act | Avoid
     """
-    response = model.generate_content(prompt)
-    return response.text
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        max_tokens=1000
+    )
+    return response.choices[0].message.content
 
 def main():
+    import time
     with open("tickers.txt") as f:
         tickers = [line.strip() for line in f if line.strip()]
 
@@ -56,7 +60,6 @@ def main():
 
     for ticker in tickers:
         print(f"Analyzing {ticker}...")
-        time.sleep(2)
         try:
             data = get_stock_data(ticker)
             analysis = analyze(data)
@@ -65,6 +68,7 @@ def main():
             lines.append("---\n")
         except Exception as e:
             lines.append(f"## {ticker}\n⚠️ Could not analyze: {e}\n---\n")
+        time.sleep(1)
 
     os.makedirs("reports", exist_ok=True)
     report_path = f"reports/{today}.md"
