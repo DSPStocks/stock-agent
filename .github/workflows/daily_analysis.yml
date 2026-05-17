@@ -28,7 +28,7 @@ jobs:
 
       - name: Run analysis
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
         run: python analyze.py
 
       - name: Commit report
