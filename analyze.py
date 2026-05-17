@@ -56,6 +56,7 @@ def main():
 
     for ticker in tickers:
         print(f"Analyzing {ticker}...")
+        time.sleep(2)
         try:
             data = get_stock_data(ticker)
             analysis = analyze(data)
