@@ -40,6 +40,7 @@ jobs:
           git fetch origin
           git checkout main
           git pull origin main --no-rebase
-          git add reports/ earnings_log.json
+          git add reports/ || true
+          git add earnings_log.json || true
           git diff --cached --quiet || git commit -m "📊 Daily report $(date +%Y-%m-%d)"
           git push https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}.git main
