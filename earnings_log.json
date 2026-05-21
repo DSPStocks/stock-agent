@@ -3,5 +3,10 @@
     "earnings_date": "2026-05-20",
     "actual_eps": 1.62,
     "beat": true
+  },
+  "BULL": {
+    "earnings_date": "2026-05-21",
+    "actual_eps": 0.04,
+    "beat": false
   }
 }
