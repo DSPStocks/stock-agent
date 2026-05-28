@@ -8,5 +8,10 @@
     "earnings_date": "2026-05-21",
     "actual_eps": 0.04,
     "beat": false
+  },
+  "COST": {
+    "earnings_date": "2026-05-28",
+    "actual_eps": 4.58,
+    "beat": true
   }
 }
